@@ -1,0 +1,58 @@
+# VHDL CODE:
+-- Code your design here
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.NUMERIC_STD.ALL;
+
+entity TrafficLight is
+    Port (
+        clk : in STD_LOGIC;
+        reset : in STD_LOGIC;
+        NS_light : out STD_LOGIC_VECTOR (1 downto 0);
+        EW_light : out STD_LOGIC_VECTOR (1 downto 0)
+    );
+end TrafficLight;
+
+architecture Behavioral of TrafficLight is
+    type state_type is (S0, S1, S2, S3);
+    signal state, next_state : state_type;
+    signal counter : integer := 0;
+begin
+
+    process(clk, reset)
+    begin
+        if reset = '1' then
+            state <= S0;
+            counter <= 0;
+        elsif rising_edge(clk) then
+            if counter = 9 then
+                state <= next_state;
+                counter <= 0;
+            else
+                counter <= counter + 1;
+            end if;
+        end if;
+    end process;
+
+    process(state)
+    begin
+        case state is
+            when S0 =>
+                NS_light <= "10";  -- Green
+                EW_light <= "00";  -- Red
+                next_state <= S1;
+            when S1 =>
+                NS_light <= "01";  -- Yellow
+                EW_light <= "00";  -- Red
+                next_state <= S2;
+            when S2 =>
+                NS_light <= "00";  -- Red
+                EW_light <= "10";  -- Green
+                next_state <= S3;
+            when S3 =>
+                NS_light <= "00";  -- Red
+                EW_light <= "01";  -- Yellow
+                next_state <= S0;
+        end case;
+    end process;
+end Behavioral;
