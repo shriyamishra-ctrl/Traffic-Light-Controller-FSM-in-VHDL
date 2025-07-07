@@ -1,0 +1,48 @@
+# Test_Bench Code
+-- Code your testbench here
+library IEEE;
+use IEEE.std_logic_1164.all;
+
+entity TrafficLight_tb is
+end TrafficLight_tb;
+
+architecture test of TrafficLight_tb is
+    signal clk     : STD_LOGIC := '0';
+    signal reset   : STD_LOGIC := '1';
+    signal NS_light, EW_light  : STD_LOGIC_VECTOR (1 downto 0);
+
+    component TrafficLight
+        Port (
+            clk : in STD_LOGIC;
+            reset : in STD_LOGIC;
+            NS_light : out STD_LOGIC_VECTOR (1 downto 0);
+            EW_light : out STD_LOGIC_VECTOR (1 downto 0)
+        );
+    end component;
+
+begin
+    UUT: TrafficLight
+        Port Map (
+            clk => clk,
+            reset => reset,
+            NS_light => NS_light,
+            EW_light => EW_light
+        );
+
+    clk_process : process
+    begin
+        for i in 0 to 100 loop   -- simulate 100 clock cycles
+        clk <= '0'; wait for 5 ns;
+        clk <= '1'; wait for 5 ns;
+    end loop;
+    wait;  -- stop the simulation
+end process;
+
+    stim_proc: process
+    begin
+        wait for 10 ns;
+        reset <= '0';
+        wait for 200 ns;
+        wait;
+    end process;
+end test;
